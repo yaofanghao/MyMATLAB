@@ -1,8 +1,5 @@
 # 部分学习路线
 # 参考资料：官方deeping learning toolbox **用户指南**
-用户指南.pdf 网盘链接： 
-
-链接：https://pan.baidu.com/s/1-w0DU2dDJ-wmNokcPWgZnA 提取码：1234
 
 数字表示在用户指南中的页码
 
