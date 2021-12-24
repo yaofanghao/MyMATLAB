@@ -25,10 +25,6 @@ https://ww2.mathworks.cn/help/stats/index.html
 * 数据分析 
 https://ww2.mathworks.cn/help/matlab/learn_matlab/data-analysis.html
 
-* MATLAB神经网络43个案例分析
-链接：https://pan.baidu.com/s/1xeGhXY8auZgYfln2QXR66g 
-提取码：1234
-
 * MATLAB数值计算
 链接：https://pan.baidu.com/s/1XAElDzVv46sqAjEc0UMyrg 
 提取码：1234
