@@ -46,11 +46,11 @@ https://ww2.mathworks.cn/help/deeplearning/deep-learning-with-images.html
 
 使用残差网络 3-13--3-21
 
-使用GoogLeNet 3-22--3-26
+GoogLeNet 3-22--3-26
 
 使用预训练网络提取特征 3-27--3-31
 
-使用AlexNet迁移学习 3-32--3-38
+AlexNet的迁移学习 3-32--3-38
 
 创建简单网络 3-39--3-43
 
@@ -72,8 +72,6 @@ GoogLeNet的Deep Dream 5-2--5-7
 
 贝叶斯优化 5-8--5-16
 
-并行训练 5-17--5-21
-
 监控训练进度 5-22--5-25
 
 自定义训练期间的输出 5-26--5-29
@@ -86,9 +84,12 @@ GoogLeNet的Deep Dream 5-2--5-7
 
 ------------------------------
 
-#计算机视觉
+# 计算机视觉
 Augment Bounding Boxes for Object Detection
 * https://ww2.mathworks.cn/help/deeplearning/ug/bounding-box-augmentation-using-computer-vision-toolbox.html
+
+标注语义分割像素集标签
+* https://ww2.mathworks.cn/help/vision/ug/label-pixels-for-semantic-segmentation.html
 
 YOLOv2 8-2--8-10
 
@@ -125,7 +126,7 @@ VGG19作为预训练的风格迁移 9-47--9-55
 
 ------------------------------
 
-#自动驾驶
+# 自动驾驶
 
 Faster RCNN的车辆检测 10-2--10-11
 
@@ -155,16 +156,65 @@ Faster RCNN的车辆检测 10-2--10-11
 --------------------------------
 
 # 数据预处理
+大量数据集的调用方式（实用！）
+* https://ww2.mathworks.cn/help/deeplearning/ug/data-sets-for-deep-learning.html
 
+创建图像分类的数据集
+* https://ww2.mathworks.cn/help/deeplearning/ug/create-and-explore-datastore-for-image-classification.html
 
+图像预处理 18-2--18-5
 
+为图像回归准备数据存储 18-6--18-13
 
+--------------------------------
 
+# 深度学习代码生成
+deep network designer生成MATLAB代码来构造和训练网络
+介绍实用MATLAB Coder生成C++代码
+* https://ww2.mathworks.cn/help/deeplearning/deep-learning-code-generation.html
 
+--------------------------------
 
+# 多层浅层神经网络与反向传播
+用神经网络处理函数逼近和非线性回归
+https://ww2.mathworks.cn/help/deeplearning/function-approximation-and-nonlinear-regression.html?s_tid=srchbrcm
 
+多层浅层网络设计 21-3--21-18
 
+提高浅层网络泛化能力，避免过拟合 27-24--27-31
 
+---------------------------------
+
+# **函数逼近、聚类和控制示例（认真看！）**
+体脂估计 30-2--30-7
+
+螃蟹分类 30-8--30-15
+
+葡萄酒分类 30-16--30-21
+
+癌症检测 30-22--30-27
+
+字符识别 30-28--30-31
+
+堆叠自编码器图像分类 30-32--30-40
+
+鸢尾花聚类 30-41--30-48
+
+基因表达分析
+
+-----------------------------------
+
+# **神经网络对象、数据和训练风格**
+讲述神经网络设计的工作流
+*  https://ww2.mathworks.cn/help/deeplearning/ug/workflow-for-neural-network-design.html?lang=en
+创建网络对象 20-3--20-5
+
+配置网络输入输出 20-6--20-7
+
+-------------------------------
+
+# 神经网络对象属性
+29-2--29-9
 
 ------------------------------
 
