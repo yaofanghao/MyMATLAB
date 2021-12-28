@@ -90,8 +90,8 @@ Automated Regression Model Selection with Bayesian and ASHA Optimization
 # 方差分析ANOVA
 * https://ww2.mathworks.cn/help/stats/examples.html?category=analysis-of-variance-anova-1&exampleproduct=all&s_tid=CRUX_lftnav
 
-# 贝叶斯优化
-贝叶斯优化SVM分类器 10-2--10-8
+# 贝叶斯优化SVM分类器 
+10-2--10-8
 
 # 参数化回归分析
 线性回归决定系数R方 11-2--11-3
