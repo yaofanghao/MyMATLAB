@@ -1,7 +1,6 @@
 function [funcVal, stdev, CI, MCfuncVals, MCsamples]= simulateMC(func,dists,N,varargin)
-% simulateMC() is a tool for Monte Carlo simulation. It draws many, many 
-% samples from user-specified distributions and combines the samples through 
-% an arbitrary function. 
+% simulateMC（） 是用于蒙特卡洛模拟的工具。
+% 描述来自用户指定分布的样本，并将样本组合在一起任意函数。
 
 % INPUTS:
 %   func            Function handle of the function to combine samples through

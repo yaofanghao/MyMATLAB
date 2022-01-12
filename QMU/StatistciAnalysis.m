@@ -38,7 +38,7 @@ dataa=normrnd(mu1,std1,1,nn); %正态分布抽样
 fprintf('理论均值10,抽样均值%4.2f 理论方差1,抽样方差%4.2f\n', mua,stda)
 %%
 %3.连续变量概率密度函数分布和累积函数分布
-X=[min(dataa):0.1:max(dataa)];
+X = [min(dataa):0.1:max(dataa)];
 Y = normpdf(X,mu1,std1);%概率密度函数
 p = normcdf(X,mu1,std1);%累积分布函数
 % figure(1)
