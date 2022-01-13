@@ -8,16 +8,16 @@
 * 官方网站
 https://ww2.mathworks.cn/help/matlab/index.html
 
--------------------------------------
+* 代码资源网
+https://ww2.mathworks.cn/matlabcentral/fileexchange/?s_tid=gn_mlc_fx_files
 
-* Deep Learning Toolbox 快速上手（新手篇）
-https://ww2.mathworks.cn/help/deeplearning/index.html
+* 中文论坛
+https://www.ilovematlab.cn/forum.php
+-------------------------------------
 
 * Deep Learning Toolbox 用户指南（完整篇）.pdf 网盘链接：
 链接：https://pan.baidu.com/s/1-w0DU2dDJ-wmNokcPWgZnA 
 提取码：1234
-
--------------------------------------
 
 * Statistics and Machine Learning Toolbox 用户指南（完整篇）
 https://ww2.mathworks.cn/help/stats/index.html
