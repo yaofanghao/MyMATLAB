@@ -17,7 +17,7 @@ n = 50; %样本量
 
 % xci为生成正态随机数
 % 疑问：mu和sigma的值如何确定？？ 应该来源于真实实验的真值？
-xc = normrnd(1.95, 0.5, 1, n)
+xc = normrnd(1.95, 0.5, 1, n);
 
 x = zeros(1,n); %存放xi
 x(1) = 2; %设置x1为2
@@ -52,8 +52,11 @@ else
     fprintf('刺激量个数为%d,数据无效\n', s);
 end
 
-mu1 = mean(x)
-sigma1 = std(x)
+mu1 = mean(x);
+sigma1 = std(x);
+
+%响应概率
+prob = (length(find(y==1)))/n;
 
 % 可视化
 xzhou = 1:1:n;
@@ -63,7 +66,7 @@ xlabel('样本数'); ylabel('刺激量'); title('临界刺激量和试验刺激�
 subplot(2,1,2); plot(xzhou,y) 
 xlabel('样本数'); ylabel('响应'); title('响应结果'); ylim([0 1]); axis padded
 
-% 导出数据
+%% 导出数据
 xlswrite( 'E:\MATLAB\MyMatlab\QMU\test2022_1\test1.xlsx', xc, 'sheet1', 'A1:AX1')
 xlswrite( 'E:\MATLAB\MyMatlab\QMU\test2022_1\test1.xlsx', x,  'sheet1', 'A2:AX2')
 xlswrite( 'E:\MATLAB\MyMatlab\QMU\test2022_1\test1.xlsx', y,  'sheet1', 'A3:AX3')

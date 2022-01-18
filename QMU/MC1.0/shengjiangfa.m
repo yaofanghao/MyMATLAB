@@ -33,5 +33,8 @@ end
 meann = mean(x);
 stdn = std(x);
 
+%ÏìÓ¦¸ÅÂÊ
+prob = (length(find(y==1)))/n;
+
 end
 
