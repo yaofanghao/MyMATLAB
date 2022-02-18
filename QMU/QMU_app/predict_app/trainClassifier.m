@@ -29,7 +29,7 @@ function [trainedClassifier, validationAccuracy] = trainClassifier(trainingData)
 % 输入:
 %   trainedClassifier.HowToPredict
 
-% 由 MATLAB 于 2022-01-19 22:20:07 自动生成
+% 由 MATLAB 于 2022-02-18 21:56:36 自动生成
 
 
 % 提取预测变量和响应
@@ -43,22 +43,25 @@ isCategoricalPredictor = [false, false];
 
 % 训练分类器
 % 以下代码指定所有分类器选项并训练分类器。
-classificationTree = fitctree(...
+template = templateTree(...
+    'MaxNumSplits', 20);
+classificationEnsemble = fitcensemble(...
     predictors, ...
     response, ...
-    'SplitCriterion', 'gdi', ...
-    'MaxNumSplits', 100, ...
-    'Surrogate', 'off', ...
+    'Method', 'AdaBoostM1', ...
+    'NumLearningCycles', 30, ...
+    'Learners', template, ...
+    'LearnRate', 0.1, ...
     'ClassNames', [0; 1]);
 
 % 使用预测函数创建结果结构体
 predictorExtractionFcn = @(t) t(:, predictorNames);
-treePredictFcn = @(x) predict(classificationTree, x);
-trainedClassifier.predictFcn = @(x) treePredictFcn(predictorExtractionFcn(x));
+ensemblePredictFcn = @(x) predict(classificationEnsemble, x);
+trainedClassifier.predictFcn = @(x) ensemblePredictFcn(predictorExtractionFcn(x));
 
 % 向结果结构体中添加字段
 trainedClassifier.RequiredVariables = {'VarName1', 'VarName2'};
-trainedClassifier.ClassificationTree = classificationTree;
+trainedClassifier.ClassificationEnsemble = classificationEnsemble;
 trainedClassifier.About = '此结构体是从 Classification Learner R2020b 导出的训练模型。';
 trainedClassifier.HowToPredict = sprintf('要对新表 T 进行预测，请使用: \n yfit = c.predictFcn(T) \n将 ''c'' 替换为作为此结构体的变量的名称，例如 ''trainedModel''。\n \n表 T 必须包含由以下内容返回的变量: \n c.RequiredVariables \n变量格式(例如矩阵/向量、数据类型)必须与原始训练数据匹配。\n忽略其他变量。\n \n有关详细信息，请参阅 <a href="matlab:helpview(fullfile(docroot, ''stats'', ''stats.map''), ''appclassification_exportmodeltoworkspace'')">How to predict using an exported model</a>。');
 
@@ -72,7 +75,7 @@ response = inputTable.VarName3;
 isCategoricalPredictor = [false, false];
 
 % 执行交叉验证
-partitionedModel = crossval(trainedClassifier.ClassificationTree, 'KFold', 10);
+partitionedModel = crossval(trainedClassifier.ClassificationEnsemble, 'KFold', 10);
 
 % 计算验证预测
 [validationPredictions, validationScores] = kfoldPredict(partitionedModel);
