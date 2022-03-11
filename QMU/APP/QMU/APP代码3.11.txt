@@ -1,0 +1,1441 @@
+classdef QMU_main < matlab.apps.AppBase
+
+    % Properties that correspond to app components
+    properties (Access = public)
+        UIFigure             matlab.ui.Figure
+        Label                matlab.ui.control.Label
+        Panel                matlab.ui.container.Panel
+        Label_4              matlab.ui.control.Label
+        Label_5              matlab.ui.control.Label
+        REditField           matlab.ui.control.EditField
+        mKnobLabel           matlab.ui.control.Label
+        RKnob                matlab.ui.control.Knob
+        cmLabel              matlab.ui.control.Label
+        HKnob                matlab.ui.control.Knob
+        MPaKnobLabel         matlab.ui.control.Label
+        MPaKnob              matlab.ui.control.Knob
+        ThetaKnobLabel       matlab.ui.control.Label
+        ThetaKnob            matlab.ui.control.Knob
+        KnobLabel            matlab.ui.control.Label
+        alphaKnob            matlab.ui.control.Knob
+        mKnob_2Label         matlab.ui.control.Label
+        R2Knob               matlab.ui.control.Knob
+        HEditField           matlab.ui.control.EditField
+        alphaEditField       matlab.ui.control.EditField
+        R2EditField          matlab.ui.control.EditField
+        ThetaEditField       matlab.ui.control.EditField
+        MPaEditField         matlab.ui.control.EditField
+        Panel_2              matlab.ui.container.Panel
+        MLPredictButton      matlab.ui.control.Button
+        Label_6              matlab.ui.control.Label
+        ZJEditField          matlab.ui.control.EditField
+        Label_7              matlab.ui.control.Label
+        MCEditField          matlab.ui.control.EditField
+        Label_8              matlab.ui.control.Label
+        MixEditField         matlab.ui.control.EditField
+        ZJLamp               matlab.ui.control.Lamp
+        MCLamp               matlab.ui.control.Lamp
+        MixLamp              matlab.ui.control.Lamp
+        QMUButton            matlab.ui.control.Button
+        MLabel               matlab.ui.control.Label
+        ZJMEditField         matlab.ui.control.EditField
+        QLabel               matlab.ui.control.Label
+        ZJQEditField         matlab.ui.control.EditField
+        Label_11             matlab.ui.control.Label
+        Label_12             matlab.ui.control.Label
+        MLabel_2             matlab.ui.control.Label
+        MCMEditField         matlab.ui.control.EditField
+        ULabel_2             matlab.ui.control.Label
+        MCUEditField         matlab.ui.control.EditField
+        QLabel_2             matlab.ui.control.Label
+        MCQEditField         matlab.ui.control.EditField
+        ZJQLamp              matlab.ui.control.Lamp
+        MCQLamp              matlab.ui.control.Lamp
+        UEditFieldLabel      matlab.ui.control.Label
+        ZJUEditField         matlab.ui.control.EditField
+        reportButton         matlab.ui.control.Button
+        QMULabel_3           matlab.ui.control.Label
+        ZJGauge              matlab.ui.control.Gauge
+        QMULabel_4           matlab.ui.control.Label
+        MCGauge              matlab.ui.control.Gauge
+        Button               matlab.ui.control.Button
+        UIAxes               matlab.ui.control.UIAxes
+        QMUPanel             matlab.ui.container.Panel
+        ZJButton             matlab.ui.control.Button
+        ZJUITable            matlab.ui.control.Table
+        MCFilePathEditField  matlab.ui.control.EditField
+        MCUITable            matlab.ui.control.Table
+        MCButton             matlab.ui.control.Button
+        FilePathLabel        matlab.ui.control.Label
+        ZJFilePathEditField  matlab.ui.control.EditField
+        MEditFieldLabel      matlab.ui.control.Label
+        MEditField           matlab.ui.control.EditField
+        Label_16             matlab.ui.control.Label
+        MCbetweenEditField   matlab.ui.control.EditField
+        Label_18             matlab.ui.control.Label
+        P0EditField          matlab.ui.control.EditField
+        bEditField_2Label    matlab.ui.control.Label
+        bEditField           matlab.ui.control.EditField
+        Label_19             matlab.ui.control.Label
+        rouEditField         matlab.ui.control.EditField
+        GEditField_2Label    matlab.ui.control.Label
+        GEditField           matlab.ui.control.EditField
+        HEditField_2Label    matlab.ui.control.Label
+        H2EditField          matlab.ui.control.EditField
+        Label_20             matlab.ui.control.Label
+        UpEditField          matlab.ui.control.EditField
+        Label_21             matlab.ui.control.Label
+        X0EditField          matlab.ui.control.EditField
+        Label_22             matlab.ui.control.Label
+        MCalphaEditField     matlab.ui.control.EditField
+        Label_23             matlab.ui.control.Label
+        MClimEditField       matlab.ui.control.EditField
+    end
+
+    
+    properties (Access = private)
+        
+        % 全局属性存放于此
+        
+%         % 机器学习预测生成结果
+%         zj_predict;
+%         mc_predict;
+%         mix_predict;
+        
+        
+        mc_th;
+        
+        % QMU评估
+        xls_dir;
+        xls_dir2;
+        
+        data_example;
+        Ni_Stimulus_Xi;
+        Stimulus_Xi;
+        stage_mitrix_i;
+        nABMb;
+        parameter_n;
+        parameter_A;
+        parameter_B;
+        parameter_M;
+        parameter_little_b;
+        parameter_rou;
+        
+        mc_data;
+        data_col;
+        data_example2_matrix;
+        zhixindu;
+        explore_num;
+        mc_prob;
+        mc_Z;
+        f_a;
+        f_b;
+        f_c;
+        f_delta;
+        mc_p1ow;
+        mc_phigh;
+        mc_between;
+        
+        % 生成结果
+        ZJ_M;
+        ZJ_U;
+        ZJ_Q;
+        MC_M;
+        MC_U;
+        MC_Q;
+        
+    end
+    
+
+    % Callbacks that handle component events
+    methods (Access = private)
+
+        % Button pushed function: MLPredictButton
+        function MLPredictButtonPushed(app, event)
+            % 机器学习预测
+           % 按下预测按钮
+           
+            % 撞击数据预测
+%             load zj_model.mat;
+            load zj_model_new.mat; % 3.11新模型
+%             zj_table = table(200, 20);  %测试数据R=200,H=20
+            zj_table = table(app.RKnob.Value, app.HKnob.Value);
+            zj_table.Properties.VariableNames{'Var1'} = 'VarName1';
+            zj_table.Properties.VariableNames{'Var2'} = 'VarName2';
+            zj_predict = trainedModel.predictFcn(zj_table);     
+
+            % 摩擦数据预测
+            load mc_model.mat;
+%             mc_table = table(200, 270, 90);  %测试数据R=200,压力270,摆角30
+            mc_table = table(app.R2Knob.Value, app.MPaKnob.Value, app.ThetaKnob.Value);
+            mc_table.Properties.VariableNames{'Var1'} = 'VarName1';
+            mc_table.Properties.VariableNames{'Var2'} = 'VarName2';
+            mc_table.Properties.VariableNames{'Var3'} = 'VarName3';
+            % mc_predict = trainedClassifier.predictFcn(mc_table);
+            mc_predict = trainedModel.predictFcn(mc_table);
+          
+            %% 融合预测概率
+            alpha = app.alphaKnob.Value; %设置撞击概率权重
+            mix_predict = alpha * zj_predict + (1-alpha) * mc_predict;
+      
+            % 异常判定
+%             if ((app.REditField.Value<=0) || (app.PEditField.Value<=0) || (app.ThetaEditField.Value<=0) ...
+%                     || (app.PEditField.Value<=0) ||  (app.AlphaEditField.Value<0) || (app.AlphaEditField.Value>1) )
+%             s = '数据不足或异常';
+%             app.ZJEditField.Value = num2str(s);
+%             app.MCEditField.Value = num2str(s);
+%             app.MixEditField.Value = num2str(s);
+%             
+%             else
+            % 预测结果打印
+            app.ZJEditField.Value = num2str(zj_predict);
+            app.MCEditField.Value = num2str(mc_predict);
+            app.MixEditField.Value = num2str(mix_predict);
+            
+%             end
+            % 灯光显示,响应即红灯
+            if zj_predict == 1
+                set(app.ZJLamp, 'Color', [1,0,0]) 
+            else
+                set(app.ZJLamp, 'Color', [0,1,0])
+            end
+            
+            if mc_predict == 1
+                set(app.MCLamp, 'Color', [1,0,0]) 
+            else
+                set(app.MCLamp, 'Color', [0,1,0])
+            end
+            
+            if mix_predict >=0.5
+                set(app.MixLamp, 'Color', [1,0,0]) 
+            else
+                set(app.MixLamp, 'Color', [0,1,0])
+            end
+
+            
+        end
+
+        % Value changed function: RKnob
+        function RKnobValueChanged(app, event)
+%             value = app.RKnob.Value;
+            app.REditField.Value = num2str(app.RKnob.Value);
+        end
+
+        % Value changed function: HKnob
+        function HKnobValueChanged(app, event)
+%             value = app.HKnob.Value;
+            app.HEditField.Value = num2str(app.HKnob.Value);
+        end
+
+        % Value changed function: alphaKnob
+        function alphaKnobValueChanged(app, event)
+%             value = app.alphaKnob.Value;
+            app.alphaEditField.Value = num2str(app.alphaKnob.Value);
+        end
+
+        % Value changed function: R2Knob
+        function R2KnobValueChanged(app, event)
+%             value = app.R2Knob.Value;
+            app.R2EditField.Value = num2str(app.R2Knob.Value);
+        end
+
+        % Value changed function: ThetaKnob
+        function ThetaKnobValueChanged(app, event)
+%             value = app.ThetaKnob.Value;
+            app.ThetaEditField.Value = num2str(app.ThetaKnob.Value);
+        end
+
+        % Value changed function: MPaKnob
+        function MPaKnobValueChanged(app, event)
+%             value = app.MPaKnob.Value;
+            app.MPaEditField.Value = num2str(app.MPaKnob.Value);
+        end
+
+        % Button pushed function: ZJButton
+        function ZJButtonPushed(app, event)
+            % 导入撞击表格数据
+            % 按下导入撞击数据按钮
+            
+%             输入excel的绝对路径
+            app.xls_dir = app.ZJFilePathEditField.Value;
+            app.data_example = xlsread(app.xls_dir, 'sheet1');
+
+            % 比较v和m大小。判定n取vi还是mi
+            [app.Ni_Stimulus_Xi,~] = get_Ni_Stimulus_Xi(app.data_example);
+            
+            app.Stimulus_Xi = app.data_example(:,1); %读取刺激量xi
+            
+            % 获取中位数X0 以及台阶数矩阵,步长d
+            [app.stage_mitrix_i,~,~] =...
+                get_stage_mitrix_and_X0(app.Stimulus_Xi);
+            
+            % 计算A B M b 的模块
+            app.nABMb = calculate_parameter_n_A_B_M_b(app.Ni_Stimulus_Xi,app.stage_mitrix_i);
+            app.parameter_n = app.nABMb.parameter_n;
+            app.parameter_A = app.nABMb.parameter_A;
+            app.parameter_B = app.nABMb.parameter_B;
+            app.parameter_M = app.nABMb.parameter_M;
+            app.parameter_little_b = app.nABMb.parameter_little_b;      
+            
+%             %数据有效性判定 1有效 0 无效
+%             data_validity = check_for_data_validity(parameter_M);
+%             if data_validity == 1
+%                 s = '数据有效，请查表输入G,H';
+%             else 
+%                 s = '数据无效，M<0.25，请重新导入';
+%             end
+%             % 显示有效性结果
+%             app.VaildEditField.Value = s;
+            
+            % 表格数据显示到界面上
+            app.ZJUITable.Data = app.data_example;
+            
+%---------------------------------------------------------------------            
+            
+            % 计算ρ 
+            app.parameter_M = roundn(app.parameter_M, -2); %保留两位小数
+            if (app.parameter_M > 0.3)
+                app.parameter_rou = 1.62 * ( app.parameter_M + 0.029 );
+            else
+%                 s = 'M<0.3, 请查表ρ(M,b)，自行输入ρ值！';
+%                 app.NoteEditField.Value = s;
+                % 自行给app.rouEditField.Value赋值
+                app.parameter_rou = app.rouEditField.Value;
+            end
+
+            % 显示计算数据
+            app.MEditField.Value = num2str(app.parameter_M);
+            app.bEditField.Value = num2str(app.parameter_little_b);
+            app.rouEditField.Value = num2str(app.parameter_rou);
+            
+
+        end
+
+        % Button pushed function: MCButton
+        function MCButtonPushed(app, event)
+           % 按下导入摩擦数据按钮
+            
+%             输入excel的绝对路径
+            app.xls_dir2 = app.MCFilePathEditField.Value;
+            app.mc_data = xlsread(app.xls_dir2, 'sheet1');
+            
+            app.data_col = length(app.mc_data)/5;
+            app.data_example2_matrix = reshape(app.mc_data, app.data_col, 5 ); %美化界面，五列展示
+            
+              % 表格数据显示到界面上
+            app.MCUITable.Data = app.data_example2_matrix;
+            
+%             app.MCNoteEditField.Value = '置信水平,摩擦安全设计值需自行输入';
+%---------------------------------------------------------------------  
+
+            %相关参数设置
+            app.zhixindu = str2double(app.MCalphaEditField.Value);
+            app.mc_th = str2double(app.MClimEditField.Value);
+%             zhixindu = 0.95; %置信度
+%             mc_th = 0.55; %安全性设计值
+
+            % 计算试验数据的摩擦感度p
+            app.explore_num = length(find(app.mc_data == 1));
+            app.mc_prob = app.explore_num/length(app.mc_data);
+
+            % 估计p的置信区间
+            % 本质是一元二次方程
+            app.mc_Z = get_Up((1-app.zhixindu) /2);% Za/2
+            app.f_a = length(app.mc_data) +  app.mc_Z^2;
+            app.f_b = -(2*length(app.mc_data)*app.mc_prob + app.mc_Z^2);
+            app.f_c = length(app.mc_data)* (app.mc_prob^2);
+            app.f_delta = sqrt(app.f_b^2 - 4*app.f_a*app.f_c);
+            app.mc_p1ow = (-app.f_b - app.f_delta) / (2*app.f_a); %p2
+            app.mc_phigh = (-app.f_b + app.f_delta) / (2*app.f_a); %p1
+            app.mc_between = [app.mc_p1ow, app.mc_phigh];
+            
+            % 显示p和区间 
+            app.P0EditField.Value = num2str(app.mc_prob);
+            app.MCbetweenEditField.Value = num2str(app.mc_between);
+            
+            
+        end
+
+        % Button pushed function: QMUButton
+        function QMUButtonPushed(app, event)
+            % 按下QMU评估按钮 计算QMU
+            % 撞击Q
+%             data_example = xlsread(app.xls_dir, 'sheet1');
+% 
+            [~,explode_or_unexplode_data_flag] = get_Ni_Stimulus_Xi(app.data_example);
+%             
+%             Stimulus_Xi = data_example(:,1); %读取刺激量xi
+%             
+            % 获取中位数X0 以及台阶数矩阵,步长d
+            [~,Stimulus_median_X0,parameter_Step_sized] =...
+                get_stage_mitrix_and_X0(app.Stimulus_Xi);
+%             
+%             % 计算A B M b 的模块
+%             nABMb = calculate_parameter_n_A_B_M_b(Ni_Stimulus_Xi,stage_mitrix_i);
+%             parameter_n = nABMb.parameter_n;
+%             parameter_A = nABMb.parameter_A;
+%             parameter_B = nABMb.parameter_B;
+%             parameter_M = nABMb.parameter_M;
+%             parameter_little_b = nABMb.parameter_little_b;      
+%             
+%           
+%             % 计算ρ 
+%             parameter_M = roundn(parameter_M, -2); %保留两位小数
+%             if (parameter_M > 0.3)
+%                 parameter_rou = 1.62 * ( parameter_M + 0.029 );
+%             else
+% %                 s = 'M<0.3, 请查表ρ(M,b)，自行输入ρ值！';
+% %                 app.MCNoteEditField.Value = s;
+%                 % 自行给app.rouEditField.Value赋值
+%                 parameter_rou = app.rouEditField.Value;
+%             end
+
+            % 显示计算数据
+%             app.MEditField.Value = num2str(parameter_M);
+%             app.bEditField.Value = num2str(parameter_little_b);
+%             app.rouEditField.Value = num2str(parameter_rou);
+            
+            % 计算mu-hat
+            parameter_miu = calculate_parameter_miu(...
+                Stimulus_median_X0,explode_or_unexplode_data_flag,...
+                app.parameter_A, app.parameter_n, parameter_Step_sized);            
+            
+            % 计算sigma-hat
+            Std_Dev_sigma = calculate_Std_Dev_sigma(app.parameter_rou,parameter_Step_sized);  
+         
+            % 由自行输入的G H 
+            % 计算sigma_mean sigma_variance
+            parameter_G = str2double(app.GEditField.Value);
+            parameter_H = str2double(app.H2EditField.Value);
+            sigma_mean = parameter_G * Std_Dev_sigma / sqrt(app.parameter_n);
+            sigma_variance = parameter_H * Std_Dev_sigma / sqrt(app.parameter_n);
+
+            % 由自行输入的置信水平
+            prob = str2double(app.UpEditField.Value);
+            % 计算sigma_Xp
+            mu = 0;
+            sigma = 1;
+            pd = makedist('Normal','mu',mu,'sigma',sigma);
+            p = 1 - prob;
+            Up = icdf(pd,p);
+%             p = 0.0001;
+            sigma_explode_prob_Xp = sqrt(sigma_mean^2 + (Up * sigma_variance)^2 );
+         
+            % 计算置信区间（上下限）
+%             explode_prob_Xp_QuantileU = ...
+%                 calculate_explode_prob_Xp_QuantileU(explode_prob_Xp,Confidence_level,sigma_explode_prob_Xp);
+            %撞击感度取置信下限
+            % 计算M=Xth-X0
+            X_th = parameter_miu - abs(Up) * Std_Dev_sigma;
+            X_zero = str2double(app.X0EditField.Value);
+                                              
+            app.ZJ_M = X_th - X_zero;
+            
+            % 计算U=Xth-Xpl
+            X_pl = X_th - abs(Up) * sigma_explode_prob_Xp;
+            app.ZJ_U = X_th - X_pl; 
+         
+            % 计算Q
+            app.ZJ_Q = app.ZJ_M ./ app.ZJ_U;
+            
+            
+% app.testEditField.Value = num2str(parameter_H);
+            
+            % 显示计算数据和指示灯（Q值小于为红灯）
+            app.ZJMEditField.Value = num2str(app.ZJ_M);
+            app.ZJUEditField.Value = num2str(app.ZJ_U);
+            app.ZJQEditField.Value = num2str(app.ZJ_Q);
+            while app.ZJ_Q<=1
+                set(app.ZJQLamp, 'Color', [1,0,0])
+            end
+   
+            % 显示至仪表
+            app.ZJGauge.Value = app.ZJ_Q;
+%---------------------------------------------------------------------   
+%---------------------------------------------------------------------   
+%---------------------------------------------------------------------   
+            % 摩擦Q
+            % 按下导入摩擦数据按钮
+            
+%             mc_data = xlsread(app.xls_dir2, 'sheet1');
+%             
+%             %相关参数设置
+%             zhixindu = str2double(app.MCalphaEditField.Value);
+%             app.mc_th = str2double(app.MClimEditField.Value);
+% % app.mc_th = str2double(app.testEditField.Value);
+%             
+% %             zhixindu = 0.95; %置信度
+% %             mc_th = 0.956; %安全性设计值
+%             
+%             % 计算试验数据的摩擦感度p
+%             explore_num = length(find(mc_data == 1));
+%             mc_prob = explore_num/length(mc_data);
+%             
+%             % 估计p的置信区间
+%             % 本质是一元二次方程
+%             mc_Z = get_Up((1-zhixindu) /2);% Za/2
+%             f_a = length(mc_data) +  mc_Z^2;
+%             f_b = -(2*length(mc_data)*mc_prob + mc_Z^2);
+%             f_c = length(mc_data)* (mc_prob^2);
+%             f_delta = sqrt(f_b^2 - 4*f_a*f_c);
+%             mc_p1ow = (-f_b - f_delta) / (2*f_a); %p1
+%             mc_phigh = (-f_b + f_delta) / (2*f_a); %p2
+%             mc_between = [mc_p1ow, mc_phigh];
+%             
+%             % 显示p和区间 
+%             app.P0EditField.Value = num2str(mc_prob);
+%             app.MCbetweenEditField.Value = num2str(mc_between);
+            
+            % B类不确定度评定
+            % 计算sigma_miu
+            prob_a = (app.mc_phigh - app.mc_p1ow) / 2;
+            mc_v = length(app.mc_data)-1;
+            mc_t = tinv(1-((1-app.zhixindu) /2), mc_v); %计算t值
+            mc_ux = prob_a / mc_t;
+            % 计算sigma_sigma
+            mc_sigmasigma = mc_ux/sqrt(2* mc_v);
+            % 计算合成sigma_plow
+            mc_sigmaplow = sqrt(mc_ux^2 + (mc_t*mc_sigmasigma)^2);
+            
+            % 计算M
+            % MC_M = mc_p1ow - mc_th;
+            app.MC_M = app.mc_th - app.mc_phigh;
+            
+            % 计算U
+            % MC_U = abs(get_Up(zhixindu)) * mc_sigmaplow;
+            app.MC_U = mc_sigmaplow;
+            
+            % 计算Q
+            app.MC_Q = app.MC_M ./ app.MC_U;
+            
+%             显示计算数据
+            app.MCMEditField.Value = num2str(app.MC_M);
+            app.MCUEditField.Value = num2str(app.MC_U);
+            app.MCQEditField.Value = num2str(app.MC_Q);
+            while app.MC_Q<=1
+                set(app.MCQLamp, 'Color', [1,0,0])
+            end         
+
+            % 显示至仪表
+            app.MCGauge.Value = app.MC_Q;
+            
+%---------------------------------------------------------------------   
+%---------------------------------------------------------------------   
+%---------------------------------------------------------------------   
+
+            % 显示Q值的图像
+            ax = app.UIAxes;
+            ax.XLim = [0 3];
+            ax.YLim = [0 3];
+%             x = [0 1 1 0];
+%             y = [0 0 1 1];
+%             x = [1 3 3 1];
+%             y = [1 1 3 3];
+            x = [0 3 3 1 1 0];
+            y = [0 0 1 1 3 3];
+
+            patch(ax, x, y, 'red');
+            hold(ax, 'on');
+            plot(ax, app.ZJ_Q, app.MC_Q, 'd',...
+                'MarkerFaceColor', 'g',...
+                'MarkerSize',10);
+%---------------------------------------------------------------------   
+%---------------------------------------------------------------------   
+%---------------------------------------------------------------------   
+            
+            % 显示雷达图
+            D1 = [app.ZJ_Q, app.MC_Q, 0, 0, 0];
+            D2 = [1, 1, 0, 0, 0];          
+            lim = [0,3;0,3;0,3;0,3;0,3];
+            labels = {'撞击', '摩擦', '未定义', '未定义', '未定义'};
+%            legendlables = {'test','threshold'};
+            Draw_radar(D1,lim,labels);
+            hold on;
+            Draw_radar(D2,lim,labels);
+            
+%----------------------------以下为测试内容------------------------
+%             % 更新至2022.2.22 待修改
+%             % 测试是否可以在app上画雷达图 不生成 新的界面
+%             
+%             % function Draw_radar(data,lim,labels)
+%             %data是要画图的数据（根据数据的个数来确定雷达图的轴数）
+%             %lim是各指标画图上下限范围
+%             %labels是坐标轴名称
+%             data = [ZJ_Q, MC_Q, 0, 0, 0]; 
+%             lim = [0,3;0,3;0,3;0,3;0,3];
+%             labels = {'撞击', '摩擦', '未定义', '未定义', '未定义'};
+%             
+%             ax2 = app.UIAxes2;
+%             
+%             n=length(data);%维度
+%             adj_data=zeros(n,1);
+%             point=zeros(n,2);
+%             
+%             set(gca,'units','normal','pos',[0 0 1 1]);
+% %             axis off
+% %             axis equal
+% %             hold on
+% 
+%             
+% 
+%             theta_last=pi/2;
+%             for i=1:n
+%                 theta=2*pi/n*i+pi/2;
+%                 plot(ax2, [0,500*cos(theta)],[0,500*sin(theta)],'k-','linewidth',2);
+%                 for j=1:5
+%                    plot(ax2, [j*100*cos(theta_last),j*100*cos(theta)],[j*100*sin(theta_last),j*100*sin(theta)],'--','linewidth',0.75,'color',[0.5,0.5,0.5]);
+%                 end
+%                 
+%                 theta_last=theta;
+%                 if data(i)<lim(i,1)
+%                     adj_data(i)=0;
+%                 elseif data(i)>lim(i,2)
+%                     adj_data(i)=500;
+%                 else
+%                     adj_data(i)=(data(i)-lim(i,1))/(lim(i,2)-lim(i,1))*500;
+%                 end
+%                 point(i,1:2)=[adj_data(i)*cos(theta);adj_data(i)*sin(theta)];
+%                 text_around(510*cos(theta),510*sin(theta),labels{i},theta);
+%             end
+%             
+%             for i=1:n
+%                 theta=2*pi/n*i+pi/2;
+%                 for j=1:5
+%                     text_around(j*100*cos(theta),j*100*sin(theta),num2str(lim(i,1)+(lim(i,2)-lim(i,1))/5*j),theta+pi/2,7);
+%                 end
+%             end
+%             plot(ax2, [point(:,1);point(1,1)],[point(:,2);point(1,2)],'k-','linewidth',0.8);
+%             fill(point(:,1),point(:,2),[0.9 0.9 0.7])
+%             alpha(0.5);
+%             texts=findobj(gca,'Type','Text');
+%             minx=-300;
+%             maxx=300;
+%             miny=-300;
+%             maxy=300;
+%             for i=1:length(texts)
+%                 rect=get(texts(i),'Extent');
+%                 x=rect(1);
+%                 y=rect(2);
+%                 dx=rect(3);
+%                 dy=rect(4);
+%                 if x<minx
+%                     minx=x;
+%                 elseif x+dx>maxx
+%                     maxx=x+dx;
+%                 end
+%                 if y<miny
+%                     miny=y;
+%                 elseif y+dy>maxy
+%                     maxy=y+dy;
+%                 end
+%             end
+%             axis([minx-50,maxx+50,miny-20,maxy+20]);
+%             
+%             
+%             
+%             
+%             
+%             hold(ax2,'on');
+%             
+%             
+%             
+%             
+%             
+%             D2 = [1, 1, 0, 0, 0]; 
+% %             lim = [0,3;0,3;0,3;0,3;0,3];
+% %             labels = {'撞击', '摩擦', '未定义', '未定义', '未定义'};
+%             
+%             ax2 = app.UIAxes2;
+%             
+%             n=length(D2);%维度
+%             adj_data=zeros(n,1);
+%             point=zeros(n,2);
+%             
+%             set(gca,'units','normal','pos',[0 0 1 1]);
+% %             axis off
+% %             axis equal
+% %             hold on
+% 
+%             theta_last=pi/2;
+%             for i=1:n
+%                 theta=2*pi/n*i+pi/2;
+%                 plot(ax2, [0,500*cos(theta)],[0,500*sin(theta)],'k-','linewidth',2);
+%                 for j=1:5
+%                    plot(ax2, [j*100*cos(theta_last),j*100*cos(theta)],[j*100*sin(theta_last),j*100*sin(theta)],'--','linewidth',0.75,'color',[0.5,0.5,0.5]);
+%                 end
+%                 
+%                 theta_last=theta;
+%                 if D2(i)<lim(i,1)
+%                     adj_data(i)=0;
+%                 elseif D2(i)>lim(i,2)
+%                     adj_data(i)=500;
+%                 else
+%                     adj_data(i)=(D2(i)-lim(i,1))/(lim(i,2)-lim(i,1))*500;
+%                 end
+%                 point(i,1:2)=[adj_data(i)*cos(theta);adj_data(i)*sin(theta)];
+%                 text_around(510*cos(theta),510*sin(theta),labels{i},theta);
+%             end
+%             
+%             for i=1:n
+%                 theta=2*pi/n*i+pi/2;
+%                 for j=1:5
+%                     text_around(j*100*cos(theta),j*100*sin(theta),num2str(lim(i,1)+(lim(i,2)-lim(i,1))/5*j),theta+pi/2,7);
+%                 end
+%             end
+%             plot(ax2, [point(:,1);point(1,1)],[point(:,2);point(1,2)],'k-','linewidth',0.8);
+%             fill(point(:,1),point(:,2),[0.9 0.9 0.7])
+%             alpha(0.5);
+%             texts=findobj(gca,'Type','Text');
+%             minx=-300;
+%             maxx=300;
+%             miny=-300;
+%             maxy=300;
+%             for i=1:length(texts)
+%                 rect=get(texts(i),'Extent');
+%                 x=rect(1);
+%                 y=rect(2);
+%                 dx=rect(3);
+%                 dy=rect(4);
+%                 if x<minx
+%                     minx=x;
+%                 elseif x+dx>maxx
+%                     maxx=x+dx;
+%                 end
+%                 if y<miny
+%                     miny=y;
+%                 elseif y+dy>maxy
+%                     maxy=y+dy;
+%                 end
+%             end
+%             axis([minx-50,maxx+50,miny-20,maxy+20]);
+            
+            
+        end
+
+        % Value changed function: REditField
+        function REditFieldValueChanged(app, event)
+%             value = app.REditField.Value;
+            app.RKnob.Value = str2double(app.REditField.Value);
+
+        end
+
+        % Value changed function: HEditField
+        function HEditFieldValueChanged(app, event)
+            app.HKnob.Value = str2double(app.HEditField.Value);
+            
+        end
+
+        % Value changed function: alphaEditField
+        function alphaEditFieldValueChanged(app, event)
+            app.alphaKnob.Value = str2double(app.alphaEditField.Value);
+            
+        end
+
+        % Value changed function: R2EditField
+        function R2EditFieldValueChanged(app, event)
+            app.R2Knob.Value = str2double(app.R2EditField.Value);
+            
+        end
+
+        % Value changed function: ThetaEditField
+        function ThetaEditFieldValueChanged(app, event)
+            app.ThetaKnob.Value = str2double(app.ThetaEditField.Value);
+            
+        end
+
+        % Value changed function: MPaEditField
+        function MPaEditFieldValueChanged(app, event)
+            app.MPaKnob.Value = str2double(app.MPaEditField.Value);
+            
+        end
+
+        % Button pushed function: reportButton
+        function reportButtonPushed(app, event)
+            % 打印评估结果
+            
+            % 3.8第一版，简陋版
+            if (app.ZJ_Q>1) && (app.MC_Q>1)
+                opts = struct('WindowStyle','modal', ...
+                    'Interpreter','tex');
+                f = msgbox({'\bf\fontsize{15}撞击感度满足可靠性要求'; ...
+                    '\bf\fontsize{15}摩擦感度满足可靠性要求'}, ...
+                '评估结果判定', ...
+                opts);
+            elseif (app.ZJ_Q>1) && (app.MC_Q<1)
+                opts = struct('WindowStyle','modal', ...
+                    'Interpreter','tex');
+                f = msgbox({'\bf\fontsize{15}撞击感度满足可靠性要求'; ...
+                    '\bf\fontsize{15}摩擦感度不满足可靠性要求'}, ...
+                '评估结果判定', ...
+                'error', ...
+                opts);                
+            elseif (app.ZJ_Q<1) && (app.MC_Q>1)
+                opts = struct('WindowStyle','modal', ...
+                    'Interpreter','tex');
+                f = msgbox({'\bf\fontsize{15}撞击感度不满足可靠性要求'; ...
+                    '\bf\fontsize{15}摩擦感度满足可靠性要求'}, ...
+                '评估结果判定', ...
+                'error', ...
+                opts);                
+            else
+                opts = struct('WindowStyle','modal', ...
+                    'Interpreter','tex');
+                f = msgbox({'\bf\fontsize{15}撞击感度不满足可靠性要求'; ...
+                    '\bf\fontsize{15}摩擦感度不满足可靠性要求'}, ...
+                '评估结果判定', ...
+                'error', ...
+                opts);                
+            end
+            
+% app.testEditField.Value = num2str(app.ZJ_Q);
+        end
+
+        % Button pushed function: Button
+        function ButtonPushed(app, event)
+            % 关闭界面
+            ques = questdlg('确定要关闭吗','提示','是','否','是');
+            switch ques
+                case '是'
+                    delete(app.UIFigure);
+                    return;
+                case '否'
+                    return;
+            end
+            
+        end
+    end
+
+    % Component initialization
+    methods (Access = private)
+
+        % Create UIFigure and components
+        function createComponents(app)
+
+            % Create UIFigure and hide until all components are created
+            app.UIFigure = uifigure('Visible', 'off');
+            app.UIFigure.Color = [0.8 0.8 0.8];
+            app.UIFigure.Position = [100 100 1248 914];
+            app.UIFigure.Name = 'MATLAB App';
+
+            % Create Label
+            app.Label = uilabel(app.UIFigure);
+            app.Label.BackgroundColor = [0.902 0.902 0.902];
+            app.Label.HorizontalAlignment = 'center';
+            app.Label.FontName = '等线';
+            app.Label.FontSize = 45;
+            app.Label.FontWeight = 'bold';
+            app.Label.FontColor = [0.6353 0.0784 0.1843];
+            app.Label.Position = [241 845 742 48];
+            app.Label.Text = '火炸药机械感度可靠性多元评估系统';
+
+            % Create Panel
+            app.Panel = uipanel(app.UIFigure);
+            app.Panel.ForegroundColor = [0.502 0.502 0.502];
+            app.Panel.BorderType = 'none';
+            app.Panel.Title = '输入-机器学习预测响应';
+            app.Panel.BackgroundColor = [0.902 0.902 0.902];
+            app.Panel.FontWeight = 'bold';
+            app.Panel.FontSize = 25;
+            app.Panel.Position = [20 553 777 275];
+
+            % Create Label_4
+            app.Label_4 = uilabel(app.Panel);
+            app.Label_4.FontSize = 22;
+            app.Label_4.Position = [17 202 137 29];
+            app.Label_4.Text = '撞击感度试验';
+
+            % Create Label_5
+            app.Label_5 = uilabel(app.Panel);
+            app.Label_5.FontSize = 22;
+            app.Label_5.Position = [412 202 137 29];
+            app.Label_5.Text = '摩擦感度试验';
+
+            % Create REditField
+            app.REditField = uieditfield(app.Panel, 'text');
+            app.REditField.ValueChangedFcn = createCallbackFcn(app, @REditFieldValueChanged, true);
+            app.REditField.HorizontalAlignment = 'right';
+            app.REditField.Position = [47 18 79 22];
+
+            % Create mKnobLabel
+            app.mKnobLabel = uilabel(app.Panel);
+            app.mKnobLabel.HorizontalAlignment = 'center';
+            app.mKnobLabel.FontSize = 16;
+            app.mKnobLabel.Position = [40 55 96 22];
+            app.mKnobLabel.Text = '颗粒直径/μm';
+
+            % Create RKnob
+            app.RKnob = uiknob(app.Panel, 'continuous');
+            app.RKnob.Limits = [0 500];
+            app.RKnob.MajorTicks = [0 50 100 150 200 250 300 350 400 450 500];
+            app.RKnob.ValueChangedFcn = createCallbackFcn(app, @RKnobValueChanged, true);
+            app.RKnob.Position = [57 111 60 60];
+
+            % Create cmLabel
+            app.cmLabel = uilabel(app.Panel);
+            app.cmLabel.HorizontalAlignment = 'center';
+            app.cmLabel.FontSize = 16;
+            app.cmLabel.Position = [176 45 64 42];
+            app.cmLabel.Text = {'落高/cm'; '(取对数)'};
+
+            % Create HKnob
+            app.HKnob = uiknob(app.Panel, 'continuous');
+            app.HKnob.Limits = [0 2];
+            app.HKnob.MajorTicks = [0 0.2 0.4 0.6 0.8 1 1.2 1.4 1.6 1.8 2];
+            app.HKnob.MajorTickLabels = {'0', '0.2', '0.4', '0.6', '0.8', '1', '1.2', '1.4', '1.6', '1.8', '2'};
+            app.HKnob.ValueChangedFcn = createCallbackFcn(app, @HKnobValueChanged, true);
+            app.HKnob.Position = [176 111 60 60];
+
+            % Create MPaKnobLabel
+            app.MPaKnobLabel = uilabel(app.Panel);
+            app.MPaKnobLabel.HorizontalAlignment = 'center';
+            app.MPaKnobLabel.FontSize = 16;
+            app.MPaKnobLabel.Position = [671 55 75 22];
+            app.MPaKnobLabel.Text = '压力/MPa';
+
+            % Create MPaKnob
+            app.MPaKnob = uiknob(app.Panel, 'continuous');
+            app.MPaKnob.Limits = [0 400];
+            app.MPaKnob.ValueChangedFcn = createCallbackFcn(app, @MPaKnobValueChanged, true);
+            app.MPaKnob.Position = [677 111 60 60];
+
+            % Create ThetaKnobLabel
+            app.ThetaKnobLabel = uilabel(app.Panel);
+            app.ThetaKnobLabel.HorizontalAlignment = 'center';
+            app.ThetaKnobLabel.FontSize = 16;
+            app.ThetaKnobLabel.Position = [549 55 83 22];
+            app.ThetaKnobLabel.Text = '摆角/Theta';
+
+            % Create ThetaKnob
+            app.ThetaKnob = uiknob(app.Panel, 'continuous');
+            app.ThetaKnob.Limits = [0 90];
+            app.ThetaKnob.MajorTicks = [0 15 30 45 60 75 90];
+            app.ThetaKnob.ValueChangedFcn = createCallbackFcn(app, @ThetaKnobValueChanged, true);
+            app.ThetaKnob.Position = [559 111 60 60];
+
+            % Create KnobLabel
+            app.KnobLabel = uilabel(app.Panel);
+            app.KnobLabel.HorizontalAlignment = 'center';
+            app.KnobLabel.FontSize = 16;
+            app.KnobLabel.Position = [292 45 69 42];
+            app.KnobLabel.Text = {'自定义'; '撞击权重'};
+
+            % Create alphaKnob
+            app.alphaKnob = uiknob(app.Panel, 'continuous');
+            app.alphaKnob.Limits = [0 1];
+            app.alphaKnob.MajorTicks = [0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
+            app.alphaKnob.ValueChangedFcn = createCallbackFcn(app, @alphaKnobValueChanged, true);
+            app.alphaKnob.Position = [296 111 60 60];
+
+            % Create mKnob_2Label
+            app.mKnob_2Label = uilabel(app.Panel);
+            app.mKnob_2Label.HorizontalAlignment = 'center';
+            app.mKnob_2Label.FontSize = 16;
+            app.mKnob_2Label.Position = [419 55 96 22];
+            app.mKnob_2Label.Text = '颗粒直径/μm';
+
+            % Create R2Knob
+            app.R2Knob = uiknob(app.Panel, 'continuous');
+            app.R2Knob.ValueChangedFcn = createCallbackFcn(app, @R2KnobValueChanged, true);
+            app.R2Knob.Position = [436 111 60 60];
+
+            % Create HEditField
+            app.HEditField = uieditfield(app.Panel, 'text');
+            app.HEditField.ValueChangedFcn = createCallbackFcn(app, @HEditFieldValueChanged, true);
+            app.HEditField.HorizontalAlignment = 'right';
+            app.HEditField.Position = [166 18 79 22];
+
+            % Create alphaEditField
+            app.alphaEditField = uieditfield(app.Panel, 'text');
+            app.alphaEditField.ValueChangedFcn = createCallbackFcn(app, @alphaEditFieldValueChanged, true);
+            app.alphaEditField.HorizontalAlignment = 'right';
+            app.alphaEditField.Position = [286 18 79 22];
+
+            % Create R2EditField
+            app.R2EditField = uieditfield(app.Panel, 'text');
+            app.R2EditField.ValueChangedFcn = createCallbackFcn(app, @R2EditFieldValueChanged, true);
+            app.R2EditField.HorizontalAlignment = 'right';
+            app.R2EditField.Position = [430 18 79 22];
+
+            % Create ThetaEditField
+            app.ThetaEditField = uieditfield(app.Panel, 'text');
+            app.ThetaEditField.ValueChangedFcn = createCallbackFcn(app, @ThetaEditFieldValueChanged, true);
+            app.ThetaEditField.HorizontalAlignment = 'right';
+            app.ThetaEditField.Position = [549 18 79 22];
+
+            % Create MPaEditField
+            app.MPaEditField = uieditfield(app.Panel, 'text');
+            app.MPaEditField.ValueChangedFcn = createCallbackFcn(app, @MPaEditFieldValueChanged, true);
+            app.MPaEditField.HorizontalAlignment = 'right';
+            app.MPaEditField.Position = [668 18 79 22];
+
+            % Create Panel_2
+            app.Panel_2 = uipanel(app.UIFigure);
+            app.Panel_2.ForegroundColor = [0.502 0.502 0.502];
+            app.Panel_2.BorderType = 'none';
+            app.Panel_2.Title = '输出';
+            app.Panel_2.BackgroundColor = [0.902 0.902 0.902];
+            app.Panel_2.FontWeight = 'bold';
+            app.Panel_2.FontSize = 25;
+            app.Panel_2.Position = [817 14 421 815];
+
+            % Create MLPredictButton
+            app.MLPredictButton = uibutton(app.Panel_2, 'push');
+            app.MLPredictButton.ButtonPushedFcn = createCallbackFcn(app, @MLPredictButtonPushed, true);
+            app.MLPredictButton.BackgroundColor = [1 0.4118 0.1608];
+            app.MLPredictButton.FontSize = 22;
+            app.MLPredictButton.FontColor = [1 1 1];
+            app.MLPredictButton.Position = [18 730 125 37];
+            app.MLPredictButton.Text = '预测响应值';
+
+            % Create Label_6
+            app.Label_6 = uilabel(app.Panel_2);
+            app.Label_6.HorizontalAlignment = 'right';
+            app.Label_6.FontSize = 20;
+            app.Label_6.Position = [50 689 85 26];
+            app.Label_6.Text = '撞击响应';
+
+            % Create ZJEditField
+            app.ZJEditField = uieditfield(app.Panel_2, 'text');
+            app.ZJEditField.FontSize = 16;
+            app.ZJEditField.Position = [150 692 100 23];
+
+            % Create Label_7
+            app.Label_7 = uilabel(app.Panel_2);
+            app.Label_7.HorizontalAlignment = 'right';
+            app.Label_7.FontSize = 20;
+            app.Label_7.Position = [50 648 85 26];
+            app.Label_7.Text = '摩擦响应';
+
+            % Create MCEditField
+            app.MCEditField = uieditfield(app.Panel_2, 'text');
+            app.MCEditField.FontSize = 16;
+            app.MCEditField.Position = [150 651 100 23];
+
+            % Create Label_8
+            app.Label_8 = uilabel(app.Panel_2);
+            app.Label_8.HorizontalAlignment = 'right';
+            app.Label_8.FontSize = 20;
+            app.Label_8.Position = [50 609 85 26];
+            app.Label_8.Text = '融合响应';
+
+            % Create MixEditField
+            app.MixEditField = uieditfield(app.Panel_2, 'text');
+            app.MixEditField.FontSize = 16;
+            app.MixEditField.Position = [150 612 100 23];
+
+            % Create ZJLamp
+            app.ZJLamp = uilamp(app.Panel_2);
+            app.ZJLamp.Position = [278 694 20 20];
+
+            % Create MCLamp
+            app.MCLamp = uilamp(app.Panel_2);
+            app.MCLamp.Position = [278 653 20 20];
+
+            % Create MixLamp
+            app.MixLamp = uilamp(app.Panel_2);
+            app.MixLamp.Position = [278 618 20 20];
+
+            % Create QMUButton
+            app.QMUButton = uibutton(app.Panel_2, 'push');
+            app.QMUButton.ButtonPushedFcn = createCallbackFcn(app, @QMUButtonPushed, true);
+            app.QMUButton.BackgroundColor = [1 0.4118 0.1608];
+            app.QMUButton.FontSize = 22;
+            app.QMUButton.FontColor = [1 1 1];
+            app.QMUButton.Position = [25 550 111 37];
+            app.QMUButton.Text = 'QMU评估';
+
+            % Create MLabel
+            app.MLabel = uilabel(app.Panel_2);
+            app.MLabel.HorizontalAlignment = 'right';
+            app.MLabel.FontSize = 20;
+            app.MLabel.Position = [18 479 25 24];
+            app.MLabel.Text = 'M';
+
+            % Create ZJMEditField
+            app.ZJMEditField = uieditfield(app.Panel_2, 'text');
+            app.ZJMEditField.FontSize = 16;
+            app.ZJMEditField.Position = [58 480 69 23];
+
+            % Create QLabel
+            app.QLabel = uilabel(app.Panel_2);
+            app.QLabel.HorizontalAlignment = 'right';
+            app.QLabel.FontSize = 20;
+            app.QLabel.Position = [238 479 25 24];
+            app.QLabel.Text = 'Q';
+
+            % Create ZJQEditField
+            app.ZJQEditField = uieditfield(app.Panel_2, 'text');
+            app.ZJQEditField.FontSize = 16;
+            app.ZJQEditField.Position = [278 480 73 23];
+
+            % Create Label_11
+            app.Label_11 = uilabel(app.Panel_2);
+            app.Label_11.FontSize = 20;
+            app.Label_11.Position = [18 515 85 26];
+            app.Label_11.Text = '撞击试验';
+
+            % Create Label_12
+            app.Label_12 = uilabel(app.Panel_2);
+            app.Label_12.FontSize = 20;
+            app.Label_12.Position = [18 436 85 26];
+            app.Label_12.Text = '摩擦试验';
+
+            % Create MLabel_2
+            app.MLabel_2 = uilabel(app.Panel_2);
+            app.MLabel_2.HorizontalAlignment = 'right';
+            app.MLabel_2.FontSize = 20;
+            app.MLabel_2.Position = [18 400 25 24];
+            app.MLabel_2.Text = 'M';
+
+            % Create MCMEditField
+            app.MCMEditField = uieditfield(app.Panel_2, 'text');
+            app.MCMEditField.FontSize = 16;
+            app.MCMEditField.Position = [58 401 69 23];
+
+            % Create ULabel_2
+            app.ULabel_2 = uilabel(app.Panel_2);
+            app.ULabel_2.HorizontalAlignment = 'right';
+            app.ULabel_2.FontSize = 20;
+            app.ULabel_2.Position = [126 400 25 24];
+            app.ULabel_2.Text = 'U';
+
+            % Create MCUEditField
+            app.MCUEditField = uieditfield(app.Panel_2, 'text');
+            app.MCUEditField.FontSize = 16;
+            app.MCUEditField.Position = [166 401 73 23];
+
+            % Create QLabel_2
+            app.QLabel_2 = uilabel(app.Panel_2);
+            app.QLabel_2.HorizontalAlignment = 'right';
+            app.QLabel_2.FontSize = 20;
+            app.QLabel_2.Position = [238 400 25 24];
+            app.QLabel_2.Text = 'Q';
+
+            % Create MCQEditField
+            app.MCQEditField = uieditfield(app.Panel_2, 'text');
+            app.MCQEditField.FontSize = 16;
+            app.MCQEditField.Position = [278 401 73 23];
+
+            % Create ZJQLamp
+            app.ZJQLamp = uilamp(app.Panel_2);
+            app.ZJQLamp.Position = [367 481 20 20];
+
+            % Create MCQLamp
+            app.MCQLamp = uilamp(app.Panel_2);
+            app.MCQLamp.Position = [367 403 20 20];
+
+            % Create UEditFieldLabel
+            app.UEditFieldLabel = uilabel(app.Panel_2);
+            app.UEditFieldLabel.HorizontalAlignment = 'right';
+            app.UEditFieldLabel.FontSize = 20;
+            app.UEditFieldLabel.Position = [126 478 25 24];
+            app.UEditFieldLabel.Text = 'U';
+
+            % Create ZJUEditField
+            app.ZJUEditField = uieditfield(app.Panel_2, 'text');
+            app.ZJUEditField.FontSize = 16;
+            app.ZJUEditField.Position = [166 479 73 23];
+
+            % Create reportButton
+            app.reportButton = uibutton(app.Panel_2, 'push');
+            app.reportButton.ButtonPushedFcn = createCallbackFcn(app, @reportButtonPushed, true);
+            app.reportButton.BackgroundColor = [1 0.4118 0.1608];
+            app.reportButton.FontSize = 22;
+            app.reportButton.FontColor = [1 1 1];
+            app.reportButton.Position = [25 8 111 37];
+            app.reportButton.Text = '评估结果';
+
+            % Create QMULabel_3
+            app.QMULabel_3 = uilabel(app.Panel_2);
+            app.QMULabel_3.HorizontalAlignment = 'center';
+            app.QMULabel_3.FontSize = 20;
+            app.QMULabel_3.Position = [71 243 92 26];
+            app.QMULabel_3.Text = '撞击QMU';
+
+            % Create ZJGauge
+            app.ZJGauge = uigauge(app.Panel_2, 'circular');
+            app.ZJGauge.Limits = [0 3];
+            app.ZJGauge.ScaleColors = [1 0 0;1 1 0.0667;0.902 0.902 0.902];
+            app.ZJGauge.ScaleColorLimits = [0 1;1 1.5;1.5 3];
+            app.ZJGauge.Position = [65 277 102 102];
+
+            % Create QMULabel_4
+            app.QMULabel_4 = uilabel(app.Panel_2);
+            app.QMULabel_4.HorizontalAlignment = 'center';
+            app.QMULabel_4.FontSize = 20;
+            app.QMULabel_4.Position = [227 243 92 26];
+            app.QMULabel_4.Text = '摩擦QMU';
+
+            % Create MCGauge
+            app.MCGauge = uigauge(app.Panel_2, 'circular');
+            app.MCGauge.Limits = [0 3];
+            app.MCGauge.ScaleColors = [1 0 0;1 1 0.0667;0.902 0.902 0.902];
+            app.MCGauge.ScaleColorLimits = [0 1;1 1.5;1.5 3];
+            app.MCGauge.Position = [221 277 102 102];
+
+            % Create Button
+            app.Button = uibutton(app.Panel_2, 'push');
+            app.Button.ButtonPushedFcn = createCallbackFcn(app, @ButtonPushed, true);
+            app.Button.BackgroundColor = [0.502 0.502 0.502];
+            app.Button.FontSize = 22;
+            app.Button.FontColor = [1 1 1];
+            app.Button.Position = [341 8 71 37];
+            app.Button.Text = '退出';
+
+            % Create UIAxes
+            app.UIAxes = uiaxes(app.Panel_2);
+            title(app.UIAxes, 'QMU综合评估')
+            xlabel(app.UIAxes, '撞击')
+            ylabel(app.UIAxes, '摩擦')
+            app.UIAxes.PlotBoxAspectRatio = [1 1 1];
+            app.UIAxes.XTick = [0 1 2 3];
+            app.UIAxes.XTickLabel = {'0'; '1'; '2'; '3'};
+            app.UIAxes.YTick = [0 1 2 3];
+            app.UIAxes.YTickLabel = {'0'; '1'; '2'; '3'};
+            app.UIAxes.Position = [71 44 262 186];
+
+            % Create QMUPanel
+            app.QMUPanel = uipanel(app.UIFigure);
+            app.QMUPanel.ForegroundColor = [0.502 0.502 0.502];
+            app.QMUPanel.Title = '输入-QMU评估可靠性';
+            app.QMUPanel.BackgroundColor = [0.902 0.902 0.902];
+            app.QMUPanel.FontWeight = 'bold';
+            app.QMUPanel.FontSize = 25;
+            app.QMUPanel.Position = [20 15 776 527];
+
+            % Create ZJButton
+            app.ZJButton = uibutton(app.QMUPanel, 'push');
+            app.ZJButton.ButtonPushedFcn = createCallbackFcn(app, @ZJButtonPushed, true);
+            app.ZJButton.BackgroundColor = [0 0.4471 0.7412];
+            app.ZJButton.FontSize = 22;
+            app.ZJButton.FontColor = [1 1 1];
+            app.ZJButton.Tooltip = {'选择撞击数据Excel表格路径'};
+            app.ZJButton.Position = [368 404 147 37];
+            app.ZJButton.Text = '导入撞击数据';
+
+            % Create ZJUITable
+            app.ZJUITable = uitable(app.QMUPanel);
+            app.ZJUITable.ColumnName = {'Xi'; 'Vi'; 'Mi'; 'Sum_Vi_Mi'};
+            app.ZJUITable.RowName = {};
+            app.ZJUITable.FontSize = 16;
+            app.ZJUITable.Position = [24 237 312 162];
+
+            % Create MCFilePathEditField
+            app.MCFilePathEditField = uieditfield(app.QMUPanel, 'text');
+            app.MCFilePathEditField.FontSize = 16;
+            app.MCFilePathEditField.Tooltip = {'输入撞击试验excel文件的完整路径'};
+            app.MCFilePathEditField.Position = [48 193 288 26];
+            app.MCFilePathEditField.Value = 'E:\MATLAB\MyMatlab\QMU\APP\QMU\mc_example.xlsx';
+
+            % Create MCUITable
+            app.MCUITable = uitable(app.QMUPanel);
+            app.MCUITable.ColumnName = {'响应结果'; ''; ''; ''};
+            app.MCUITable.RowName = {};
+            app.MCUITable.FontSize = 16;
+            app.MCUITable.Position = [25 25 307 153];
+
+            % Create MCButton
+            app.MCButton = uibutton(app.QMUPanel, 'push');
+            app.MCButton.ButtonPushedFcn = createCallbackFcn(app, @MCButtonPushed, true);
+            app.MCButton.BackgroundColor = [0 0.4471 0.7412];
+            app.MCButton.FontSize = 22;
+            app.MCButton.FontColor = [1 1 1];
+            app.MCButton.Tooltip = {'选择摩擦数据Excel表格路径'};
+            app.MCButton.Position = [368 182 147 37];
+            app.MCButton.Text = '导入摩擦数据';
+
+            % Create FilePathLabel
+            app.FilePathLabel = uilabel(app.QMUPanel);
+            app.FilePathLabel.HorizontalAlignment = 'right';
+            app.FilePathLabel.FontSize = 20;
+            app.FilePathLabel.Position = [20 448 84 24];
+            app.FilePathLabel.Text = 'File Path';
+
+            % Create ZJFilePathEditField
+            app.ZJFilePathEditField = uieditfield(app.QMUPanel, 'text');
+            app.ZJFilePathEditField.FontSize = 16;
+            app.ZJFilePathEditField.Tooltip = {'输入撞击试验excel文件的完整路径'};
+            app.ZJFilePathEditField.Position = [48 415 288 26];
+            app.ZJFilePathEditField.Value = 'E:\MATLAB\MyMatlab\QMU\APP\QMU\zj_example.xlsx';
+
+            % Create MEditFieldLabel
+            app.MEditFieldLabel = uilabel(app.QMUPanel);
+            app.MEditFieldLabel.HorizontalAlignment = 'right';
+            app.MEditFieldLabel.FontSize = 16;
+            app.MEditFieldLabel.Position = [375 361 25 22];
+            app.MEditFieldLabel.Text = 'M';
+
+            % Create MEditField
+            app.MEditField = uieditfield(app.QMUPanel, 'text');
+            app.MEditField.HorizontalAlignment = 'right';
+            app.MEditField.FontSize = 16;
+            app.MEditField.Position = [415 360 100 23];
+
+            % Create Label_16
+            app.Label_16 = uilabel(app.QMUPanel);
+            app.Label_16.HorizontalAlignment = 'right';
+            app.Label_16.FontSize = 16;
+            app.Label_16.Position = [345 71 37 42];
+            app.Label_16.Text = {'置信'; '区间'};
+
+            % Create MCbetweenEditField
+            app.MCbetweenEditField = uieditfield(app.QMUPanel, 'text');
+            app.MCbetweenEditField.HorizontalAlignment = 'right';
+            app.MCbetweenEditField.Position = [391 91 117 22];
+
+            % Create Label_18
+            app.Label_18 = uilabel(app.QMUPanel);
+            app.Label_18.HorizontalAlignment = 'right';
+            app.Label_18.FontSize = 16;
+            app.Label_18.Position = [331 134 69 22];
+            app.Label_18.Text = '爆炸概率';
+
+            % Create P0EditField
+            app.P0EditField = uieditfield(app.QMUPanel, 'text');
+            app.P0EditField.HorizontalAlignment = 'right';
+            app.P0EditField.FontSize = 16;
+            app.P0EditField.Position = [415 133 100 23];
+
+            % Create bEditField_2Label
+            app.bEditField_2Label = uilabel(app.QMUPanel);
+            app.bEditField_2Label.HorizontalAlignment = 'right';
+            app.bEditField_2Label.FontSize = 16;
+            app.bEditField_2Label.Position = [375 317 25 22];
+            app.bEditField_2Label.Text = 'b';
+
+            % Create bEditField
+            app.bEditField = uieditfield(app.QMUPanel, 'text');
+            app.bEditField.HorizontalAlignment = 'right';
+            app.bEditField.FontSize = 16;
+            app.bEditField.Position = [415 316 100 23];
+
+            % Create Label_19
+            app.Label_19 = uilabel(app.QMUPanel);
+            app.Label_19.HorizontalAlignment = 'right';
+            app.Label_19.FontSize = 16;
+            app.Label_19.Position = [375 274 25 22];
+            app.Label_19.Text = 'ρ';
+
+            % Create rouEditField
+            app.rouEditField = uieditfield(app.QMUPanel, 'text');
+            app.rouEditField.HorizontalAlignment = 'right';
+            app.rouEditField.FontSize = 16;
+            app.rouEditField.Tooltip = {'ρ可计算或查表得出'};
+            app.rouEditField.Position = [415 273 100 23];
+
+            % Create GEditField_2Label
+            app.GEditField_2Label = uilabel(app.QMUPanel);
+            app.GEditField_2Label.HorizontalAlignment = 'right';
+            app.GEditField_2Label.FontSize = 16;
+            app.GEditField_2Label.Position = [562 361 25 22];
+            app.GEditField_2Label.Text = 'G';
+
+            % Create GEditField
+            app.GEditField = uieditfield(app.QMUPanel, 'text');
+            app.GEditField.HorizontalAlignment = 'right';
+            app.GEditField.FontSize = 16;
+            app.GEditField.Tooltip = {'查表输入G值'};
+            app.GEditField.Position = [602 360 100 23];
+            app.GEditField.Value = '1.031';
+
+            % Create HEditField_2Label
+            app.HEditField_2Label = uilabel(app.QMUPanel);
+            app.HEditField_2Label.HorizontalAlignment = 'right';
+            app.HEditField_2Label.FontSize = 16;
+            app.HEditField_2Label.Position = [562 318 25 22];
+            app.HEditField_2Label.Text = 'H';
+
+            % Create H2EditField
+            app.H2EditField = uieditfield(app.QMUPanel, 'text');
+            app.H2EditField.HorizontalAlignment = 'right';
+            app.H2EditField.FontSize = 16;
+            app.H2EditField.Tooltip = {'查表输入H值'};
+            app.H2EditField.Position = [602 317 100 23];
+            app.H2EditField.Value = '1.325';
+
+            % Create Label_20
+            app.Label_20 = uilabel(app.QMUPanel);
+            app.Label_20.HorizontalAlignment = 'right';
+            app.Label_20.FontSize = 16;
+            app.Label_20.Position = [518 275 69 22];
+            app.Label_20.Text = '置信水平';
+
+            % Create UpEditField
+            app.UpEditField = uieditfield(app.QMUPanel, 'text');
+            app.UpEditField.HorizontalAlignment = 'right';
+            app.UpEditField.FontSize = 16;
+            app.UpEditField.Position = [602 274 100 23];
+            app.UpEditField.Value = '0.9999';
+
+            % Create Label_21
+            app.Label_21 = uilabel(app.QMUPanel);
+            app.Label_21.HorizontalAlignment = 'right';
+            app.Label_21.FontSize = 16;
+            app.Label_21.Position = [518 209 69 42];
+            app.Label_21.Text = {'撞击安全'; '设计值'};
+
+            % Create X0EditField
+            app.X0EditField = uieditfield(app.QMUPanel, 'text');
+            app.X0EditField.HorizontalAlignment = 'right';
+            app.X0EditField.FontSize = 16;
+            app.X0EditField.Position = [602 228 100 23];
+            app.X0EditField.Value = '0.7';
+
+            % Create Label_22
+            app.Label_22 = uilabel(app.QMUPanel);
+            app.Label_22.HorizontalAlignment = 'right';
+            app.Label_22.FontSize = 16;
+            app.Label_22.Position = [518 134 69 22];
+            app.Label_22.Text = '置信水平';
+
+            % Create MCalphaEditField
+            app.MCalphaEditField = uieditfield(app.QMUPanel, 'text');
+            app.MCalphaEditField.HorizontalAlignment = 'right';
+            app.MCalphaEditField.FontSize = 16;
+            app.MCalphaEditField.Position = [602 133 100 23];
+            app.MCalphaEditField.Value = '0.95';
+
+            % Create Label_23
+            app.Label_23 = uilabel(app.QMUPanel);
+            app.Label_23.HorizontalAlignment = 'right';
+            app.Label_23.FontSize = 16;
+            app.Label_23.Position = [517 70 70 42];
+            app.Label_23.Text = {'摩擦安全'; '设计值'};
+
+            % Create MClimEditField
+            app.MClimEditField = uieditfield(app.QMUPanel, 'text');
+            app.MClimEditField.HorizontalAlignment = 'right';
+            app.MClimEditField.FontSize = 16;
+            app.MClimEditField.Position = [602 89 100 23];
+            app.MClimEditField.Value = '0.956';
+
+            % Show the figure after all components are created
+            app.UIFigure.Visible = 'on';
+        end
+    end
+
+    % App creation and deletion
+    methods (Access = public)
+
+        % Construct app
+        function app = QMU_main
+
+            % Create UIFigure and components
+            createComponents(app)
+
+            % Register the app with App Designer
+            registerApp(app, app.UIFigure)
+
+            if nargout == 0
+                clear app
+            end
+        end
+
+        % Code that executes before app deletion
+        function delete(app)
+
+            % Delete UIFigure when app is deleted
+            delete(app.UIFigure)
+        end
+    end
+end
