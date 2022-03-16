@@ -3,9 +3,9 @@ clc
 clear all
 
 % 初始参数设置
-R = 200; % 手动选择颗粒直径
+% R = 200; % 手动选择颗粒直径
 % R = 300;
-% R = 400;
+R = 400;
 % R = 500;
 
 num = 50; %样本量
@@ -29,9 +29,9 @@ num = 50; %样本量
 % end
 
 %----generate2
-if R == 200 
-    mu = 1.4;  % 正态分布参数（？依据仿真试验产生数据作为先验知识）
-    sigma = 0.098658; 
+if R == 400 
+    mu = 1.2833333333;  % 正态分布参数（？依据仿真试验产生数据作为先验知识）
+    sigma = 0.067698; 
 end
 
 
@@ -64,10 +64,13 @@ data_zj = [Ri', x', y'];
 % 可视化
 xzhou = 1:1:num;
 subplot(2,1,1); scatter(xzhou,xc,'+'); hold on; plot(xzhou,x); 
-xlabel('样本数'); ylabel('刺激量'); title('撞击试验'); axis padded
+% xlabel('样本数'); 
+ylabel('stimulate'); title('Monte-Carlo of impact'); axis padded
 
 subplot(2,1,2); plot(xzhou,y) ;
-xlabel('样本数'); ylabel('响应'); title('响应结果'); ylim([0 1]); axis padded
+xlabel('num'); ylabel('response'); 
+% title('响应结果'); 
+ylim([0 1]); axis padded
 
 %% 2022.1.19 尝试蒙特卡洛生成摩擦数据
 clc
