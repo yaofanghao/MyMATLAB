@@ -32,7 +32,7 @@
 
 clear all, close all, clc
 % IMAGE: read and show RGB image
-image = double(imread('images/redtest.png'))./255; % colour values between 0 and 1
+image = double(imread('images/redbig.png'))./255; % colour values between 0 and 1
 s_im = size(image);
 
 %*************************************************************************%
