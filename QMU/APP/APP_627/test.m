@@ -141,7 +141,7 @@ parameter_little_b2 = nABMb2.parameter_little_b;
 %---------------------------------------------------------------------            
 
 % 计算ρ 
-parameter_M2 = roundn(parameter_M2, -2); %保留两位小数
+parameter_M2 = roundn(parameter_M2, -3); %保留两位小数
 if (parameter_M2 > 0.3)
     parameter_rou2 = 1.62 * ( parameter_M2 + 0.029 );
 else
@@ -155,8 +155,11 @@ end
 [~,explode_or_unexplode_data_flag2] = get_Ni_Stimulus_Xi(mc_data);
 
 % 获取中位数X0 以及台阶数矩阵,步长d
-[~,Stimulus_median_X02,parameter_Step_sized2] =...
+[~,~,parameter_Step_sized2] =...
     get_stage_mitrix_and_X0(Stimulus_Xi2);
+% 重新计算出x50的值
+Stimulus_median_X02 = mc_data(1,1) +  ...
+(parameter_A2/parameter_n2 + explode_or_unexplode_data_flag2*0.5) * parameter_Step_sized2;
 
 % 计算mu-hat
 parameter_miu2 = calculate_parameter_miu(...
@@ -168,7 +171,7 @@ Std_Dev_sigma2 = calculate_Std_Dev_sigma(parameter_rou2,parameter_Step_sized2);
 
 % 由自行输入的G H 
 % 计算sigma_mean sigma_variance
-parameter_G2 = 0.961;
+parameter_G2 = 0.974;
 parameter_H2 = 1.596;
 sigma_mean2 = parameter_G2 * Std_Dev_sigma2 / sqrt(parameter_n2);
 sigma_variance2 = parameter_H2 * Std_Dev_sigma2 / sqrt(parameter_n2);
@@ -196,7 +199,7 @@ X_th2 = parameter_miu2 - abs(Up2) * Std_Dev_sigma2;
 X_pl2 = X_th2 - abs(Up2) * sigma_explode_prob_Xp2;             
 
 % if app.DropDown.Value == char('自动计算')
-    mc_th = X_pl2 - 0.1;
+    mc_th = roundn(X_pl2 - 0.1,-1);
 % else
 %     mc_th = str2double(app.MClimEditField.Value); % 可以自定义修改安全性设计值
 % end
